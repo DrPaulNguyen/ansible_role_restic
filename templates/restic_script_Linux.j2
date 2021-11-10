@@ -139,7 +139,7 @@ else
 fi
 
 
-{% if item.forget is defined and item.forget == false %}
+{% if item.forget is not defined or item.forget == true %}
 {#
   Define stdin forget commands
 #}
