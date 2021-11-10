@@ -45,7 +45,7 @@ block:
       excludes: '{{item.dir_excl | default("")}}'
     register: paths
   - set_fact:
-    item: "{{ item | combine({ 'type': 'multi', 'srcs': paths.files|map(attribute='path') }) }}"
+      item: "{{ item | combine({ 'type': 'multi', 'srcs': paths.files|map(attribute='path') }) }}"
 when:
   - (item.type|default('single')) == 'dir'
   - item.dir is defined
