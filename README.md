@@ -9,7 +9,7 @@
 
  Description
 -------------
-*Update for improving multiple backups at a time*  
+*Update for improving multiple backups at a time!*  
 [Restic](https://github.com/restic/restic) is a versatile Go based backup
 solution which supports multiple backends, deduplication and incremental
 backups.
