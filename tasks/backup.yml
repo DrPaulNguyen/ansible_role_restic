@@ -20,7 +20,7 @@
     - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
 
-- name: Create backup script
+- name: Create backup script single
   template:
     src: restic_script_Linux.j2
     dest: "{{ restic_script_dir }}/backup-{{ item.name | replace(' ', '') }}.sh"
@@ -30,7 +30,24 @@
   no_log: "{{ restic_no_log }}"
   with_items: '{{ restic_backups }}'
   when:
+    - item.multi is not defined or item.multi == false
     - item.name is defined
     - item.src is defined or item.stdin is defined
     - item.src is defined or item.stdin and item.stdin_cmd is defined
+    - item.repo in restic_repos
+
+- name: Create backup script multi
+  template:
+    src: restic_script_multi_Linux.j2
+    dest: "{{ restic_script_dir }}/backup-{{ item.name | replace(' ', '') }}.sh"
+    mode: '0700'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
+  no_log: "{{ restic_no_log }}"
+  with_items: '{{ restic_backups }}'
+  when:
+    - item.multi is defined and item.multi == true
+    - item.name is defined
+    - item.srcs is defined or item.stdin is defined
+    - item.srcs is defined or item.stdin and item.stdin_cmds is defined
     - item.repo in restic_repos
