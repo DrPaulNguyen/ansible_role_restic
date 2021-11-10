@@ -1,7 +1,7 @@
 ---
 - name: list directory
   find:
-    paths: item.dir
+    paths: '{{ item.dir }}'
     recurse: no
     file_type: directory
     excludes: '{{item.dir_excl | default("")}}'
