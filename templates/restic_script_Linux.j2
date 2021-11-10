@@ -139,7 +139,7 @@ else
 fi
 
 
-
+{% if item.no_forget is defined and item.no_forget == true %}
 {#
   Define stdin forget commands
 #}
@@ -157,3 +157,4 @@ else
       {{ ' ' }}Please repair the restic-{{ item.name | replace(' ', '') }} job."
     {% endif %}
 fi
+{% endif %}
