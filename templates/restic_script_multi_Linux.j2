@@ -129,7 +129,7 @@ fi
   {% endfor %}
 {% else %}
   {% for src in item.srcs %}
-    {{ restic_install_path }}/restic backup src $MODE_TAG \
+    {{ restic_install_path }}/restic backup {{ src }} $MODE_TAG \
       {{ tags(item.tags) }} \
       {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
       $@ \
@@ -147,7 +147,16 @@ fi
 {#
   Define stdin forget commands
 #}
-{{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} {{ forget_output_log }}
+
+{% if item.stdin is defined and item.stdin == true %}
+  {% for stdin_cmd in item.stdin_cmds %}
+    {{ restic_install_path }}/restic forget --path {{ stdin_cmd.stdin_filename }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} {{ forget_output_log }}
+  {% endfor %}
+{% else %}
+  {% for src in item.srcs %}
+    {{ restic_install_path }}/restic forget --path {{ src }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} {{ forget_output_log }}
+  {% endfor %}
+{% endif %}
 if [[ $? -eq 0 ]]
 then
     echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" {{ forget_result_log }}
