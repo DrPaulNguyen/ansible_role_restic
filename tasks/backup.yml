@@ -30,11 +30,26 @@
   no_log: "{{ restic_no_log }}"
   with_items: '{{ restic_backups }}'
   when:
-    - not (item.multi|default(true)|bool)
+    - (item.type|default('single')) == 'single'
     - item.name is defined
     - item.src is defined or item.stdin is defined
     - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
+
+block:
+  - name: list directory
+    find:
+      paths: item.dir
+      recurse: no
+      file_type: directory
+      excludes: '{{item.dir_excl | default("")}}'
+    register: paths
+  - set_fact:
+    item: "{{ item | combine({ 'type': 'multi', 'srcs': paths.files|map(attribute='path') }) }}"
+when:
+  - (item.type|default('single')) == 'dir'
+  - item.dir is defined
+  - item.name is defined
 
 - name: Create backup script multi
   template:
@@ -46,7 +61,7 @@
   no_log: "{{ restic_no_log }}"
   with_items: '{{ restic_backups }}'
   when:
-    - item.multi is defined and (item.multi | bool)
+    - (item.type|default('single')) == 'multi'
     - item.name is defined
     - item.srcs is defined or item.stdin is defined
     - item.srcs is defined or item.stdin and item.stdin_cmds is defined
