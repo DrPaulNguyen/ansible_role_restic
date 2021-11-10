@@ -7,7 +7,9 @@
     excludes: '{{item.dir_excl | default("")}}'
   register: paths
 - set_fact:
-    item: "{{ item | combine({ 'type': 'multi', 'srcs': paths.files|map(attribute='path') }) }}"
+    new_item: "{{ item | combine({ 'type': 'multi', 'srcs': paths.files|map(attribute='path') }) }}"
+- update_fact:
+    item: '{{ new_item }}'
 - name: write backup script
   template:
     src: restic_script_multi_Linux.j2
