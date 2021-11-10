@@ -19,11 +19,12 @@ and optionally sets systemd timer or cronjobs to run the backups.
 Aditionally, it will setup executable scripts to run a Backup manually.
 
 > This Project borrowed heavily from the
-> [do1ljr](https://github.com/roles-ansible/ansible_role_restic) and  
+> [do1ljr](https://github.com/roles-ansible/ansible_role_restic) and
 > [donat-b/ansible-restic](https://github.com/donat-b/ansible-restic) and
 > the [https://github.com/arillso/ansible.restic](https://github.com/arillso/ansible.restic)
-> ansible role. We try to make this role more easy to anderstand and modern by using systemd timer,
+> ansible role. The authors made this role more easy to anderstand and modern by using systemd timer,
 > /etc/crontab to define backup paths, more absolute paths and less options. (no S3 Storage, No Windows...)
+> However, those roles are fit for a few backups on a server at a time. We try to tweak the original role to improve the need with minimal changes.
 
 ### Backup Scripts
 This role will create a backup script and a file with credentials usable with the `source` command on linux for each backup in the `restic_script_dir`.
