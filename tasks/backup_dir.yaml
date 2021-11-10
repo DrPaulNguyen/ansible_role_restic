@@ -1,0 +1,17 @@
+---
+- name: list directory
+  find:
+    paths: item.dir
+    recurse: no
+    file_type: directory
+    excludes: '{{item.dir_excl | default("")}}'
+  register: paths
+- set_fact:
+    item: "{{ item | combine({ 'type': 'multi', 'srcs': paths.files|map(attribute='path') }) }}"
+- name: write backup script
+  template:
+    src: restic_script_multi_Linux.j2
+    dest: "{{ restic_script_dir }}/backup-{{ item.name | replace(' ', '') }}.sh"
+    mode: '0700'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
