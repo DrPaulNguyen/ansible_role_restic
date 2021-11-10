@@ -30,7 +30,7 @@
   no_log: "{{ restic_no_log }}"
   with_items: '{{ restic_backups }}'
   when:
-    - item.multi is not defined or not (item.multi | bool)
+    - not (item.multi|default(true)|bool)
     - item.name is defined
     - item.src is defined or item.stdin is defined
     - item.src is defined or item.stdin and item.stdin_cmd is defined
