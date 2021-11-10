@@ -19,6 +19,7 @@ and optionally sets systemd timer or cronjobs to run the backups.
 Aditionally, it will setup executable scripts to run a Backup manually.
 
 > This Project borrowed heavily from the
+> [do1ljr](https://github.com/roles-ansible/ansible_role_restic) and  
 > [donat-b/ansible-restic](https://github.com/donat-b/ansible-restic) and
 > the [https://github.com/arillso/ansible.restic](https://github.com/arillso/ansible.restic)
 > ansible role. We try to make this role more easy to anderstand and modern by using systemd timer,
