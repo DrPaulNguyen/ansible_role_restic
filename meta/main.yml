@@ -1,8 +1,8 @@
 ---
 galaxy_info:
   role_name: restic
-  author: do1jlr
-  description: Ansible role to deploy restic and setup backups.
+  author: drpaulnguyen
+  description: Ansible role to deploy restic and setup backups.[Forked from author - do1jlr]
   license: MIT
   min_ansible_version: 2.10.6
   platforms:
