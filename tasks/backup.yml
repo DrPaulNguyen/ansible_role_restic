@@ -25,16 +25,11 @@
     _backups: '{{ _backups| default([]) + [item|combine({"type": item.type | default("single")})] }}'
   with_items: '{{ restic_backups }}'
 
-- name: post process default
-  set_fact:
-    restic_backups: '{{ _backups }}'
-
 - name: Split backups
   set_fact:
-    single_backups: "{{ restic_backups | selectattr('type', 'single') }}"
-    dir_backups: "{{ restic_backups | selectattr('type', 'dir') }}"
-    multi_backups: "{{ restic_backups | selectattr('type', 'multi') }}"
-  with_items: '{{ restic_backups }}'
+    single_backups: "{{ _backups | selectattr('type', 'single') }}"
+    dir_backups: "{{ _backups | selectattr('type', 'dir') }}"
+    multi_backups: "{{ _backups | selectattr('type', 'multi') }}"
   
 - name: list folder for _dir_ backup
   find:
