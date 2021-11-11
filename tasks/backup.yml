@@ -27,9 +27,9 @@
 
 - name: Split backups
   set_fact:
-    single_backups: "{{ _backups | selectattr('type', 'single') }}"
-    dir_backups: "{{ _backups | selectattr('type', 'dir') }}"
-    multi_backups: "{{ _backups | selectattr('type', 'multi') }}"
+    single_backups: "{{ _backups | selectattr('type','equalto', 'single') }}"
+    dir_backups: "{{ _backups | selectattr('type','equalto', 'dir') }}"
+    multi_backups: "{{ _backups | selectattr('type','equalto', 'multi') }}"
   
 - name: list folder for _dir_ backup
   find:
