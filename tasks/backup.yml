@@ -20,6 +20,34 @@
     - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
 
+- name: process default
+  set_fact:
+    _backups: '{{ _backups| default([]) + [item|combine({"type": item.type | default("single")})] }}'
+  with_item: '{{ restic_backups }}'
+
+- name: post process default
+  set_fact:
+    restic_backups: '{{ _backups }}'
+
+- name: Split backups
+  set_fact:
+    single_backups: "{{ restic_backups | selectattr('type', 'single') }}"
+    dir_backups: "{{ restic_backups | selectattr('type', 'dir') }}"
+    multi_backups: "{{ restic_backups | selectattr('type', 'multi') }}"
+  with_items: '{{ restic_backups }}'
+  
+- name: list folder for _dir_ backup
+  find:
+    paths: '{{ item.dir }}'
+    recurse: no
+    file_type: directory
+    excludes: '{{item.dir_excl | default("")}}'
+  with_items: '{{ dir_backups }}'
+  register: dir_backup_paths
+- set_fact:
+    multi_backups: "{{ multi_backups | + [item|combine({ 'type': 'multi', 'srcs': item.paths.files|map(attribute='path') })] }}"
+  with_items: '{{ dir_backup_paths }}'
+
 - name: Create backup script single
   template:
     src: restic_script_Linux.j2
@@ -28,15 +56,14 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: "{{ restic_no_log }}"
-  with_items: '{{ restic_backups }}'
+  with_items: '{{ single_backups }}'
   when:
-    - (item.type|default('single')) == 'single'
     - item.name is defined
     - item.src is defined or item.stdin is defined
     - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
 
-- name: Create backup script multi
+- name: Create backup script multi/dir
   template:
     src: restic_script_multi_Linux.j2
     dest: "{{ restic_script_dir }}/backup-{{ item.name | replace(' ', '') }}.sh"
@@ -44,21 +71,10 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: "{{ restic_no_log }}"
-  with_items: '{{ restic_backups }}'
+  with_items: '{{ multi_backups }}'
   when:
-    - (item.type|default('single')) == 'multi'
     - item.name is defined
     - item.srcs is defined or item.stdin is defined
     - item.srcs is defined or item.stdin and item.stdin_cmds is defined
-    - item.repo in restic_repos
-
-- name: Create backup script multi with dir
-  include_tasks: backup_dir.yaml
-  no_log: "{{ restic_no_log }}"
-  with_items: '{{ restic_backups }}'
-  when:
-    - (item.type|default('single')) == 'dir'
-    - item.dir is defined
-    - item.name is defined
     - item.repo in restic_repos
 
