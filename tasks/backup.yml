@@ -23,7 +23,7 @@
 - name: process default
   set_fact:
     _backups: '{{ _backups| default([]) + [item|combine({"type": item.type | default("single")})] }}'
-  with_item: '{{ restic_backups }}'
+  with_items: '{{ restic_backups }}'
 
 - name: post process default
   set_fact:
