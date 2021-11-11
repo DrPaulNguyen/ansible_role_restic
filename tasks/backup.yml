@@ -39,8 +39,9 @@
     excludes: '{{item.dir_excl | default("")}}'
   with_items: '{{ dir_backups }}'
   register: dir_backup_paths
+
 - set_fact:
-    multi_backups: "{{ multi_backups | + [item.item|combine({ 'type': 'multi', 'srcs': item.files|map(attribute='path') })] }}"
+    multi_backups: "{{ multi_backups + [item.item|combine({ 'type': 'multi', 'srcs': item.files|map(attribute='path') })] }}"
   with_items: '{{ dir_backup_paths.results }}'
 
 - name: Create backup script single
