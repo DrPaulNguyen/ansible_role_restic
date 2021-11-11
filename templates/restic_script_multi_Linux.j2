@@ -74,6 +74,7 @@ set -uxo pipefail
   Define retention pattern
 #}
 {% macro retention_pattern(repo) -%}
+  {% if repo.forget_group_by is defined and repo.forget_group_by != None %}--group_by {{ item.forget_group_by }}{% endif %} \
   {% if repo.keep_last is defined and repo.keep_last != None %}--keep-last {{ item.keep_last }}{% endif %} \
   {% if repo.keep_hourly is defined and repo.keep_hourly != None %}--keep-hourly {{ item.keep_hourly }}{% endif %} \
   {% if repo.keep_daily is defined and repo.keep_daily != None %}--keep-daily {{ item.keep_daily }}{% endif %} \
