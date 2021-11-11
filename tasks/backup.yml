@@ -5,6 +5,13 @@
   when:
     - restic_backups | type_debug == "dict"
 
+- name: process default
+  set_fact:
+    _backups: "{{ _backups| default([]) + [ item|combine({ 'type': item.type | default('single'), 'stdin': item.stdin|default('no'),'src': item.src|default(''), 'dir': item.dir|default(''), 'stdin_cmd': item.stdin_cmd|default(''),'srcs': item.srcs|default([]) }) ] }}"
+  with_items: '{{ restic_backups }}'
+- set_fact:
+    restic_backups: '{{ _backups }}'
+
 - name: Create backup credentials
   template:
     src: restic_access_Linux.j2
@@ -16,20 +23,14 @@
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
-    - item.src is defined or item.stdin is defined or item.type is defined
-    - item.src is defined or (item.stdin and item.stdin_cmd is defined) or (item.type == 'dir' and item.dir is defined) or (item.type == 'multi' and item.srcs is defined)
+    - (item.type == 'single' and item.src != '') or (item.stdin and item.stdin_cmd is defined) or (item.type == 'dir' and item.dir != '') or (item.type == 'multi' and (item.srcs|length>0))
     - item.repo in restic_repos
-
-- name: process default
-  set_fact:
-    _backups: '{{ _backups| default([]) + [item|combine({"type": item.type | default("single")})] }}'
-  with_items: '{{ restic_backups }}'
 
 - name: Split backups
   set_fact:
-    single_backups: "{{ _backups | selectattr('type','equalto', 'single') }}"
-    dir_backups: "{{ _backups | selectattr('type','equalto', 'dir') }}"
-    multi_backups: "{{ _backups | selectattr('type','equalto', 'multi') }}"
+    single_backups: "{{ restic_backups | selectattr('type','equalto', 'single') }}"
+    dir_backups: "{{ restic_backups | selectattr('type','equalto', 'dir') }}"
+    multi_backups: "{{ restic_backups | selectattr('type','equalto', 'multi') }}"
   
 - name: list folder for _dir_ backup
   find:
