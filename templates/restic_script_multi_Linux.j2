@@ -34,10 +34,6 @@ export B2_ACCOUNT_ID={{ restic_repos[item.repo].b2_account_id }}
 {% if restic_repos[item.repo].b2_account_key is defined %}
 export B2_ACCOUNT_KEY={{ restic_repos[item.repo].b2_account_key }}
 {% endif %}
-{% if item.srcs is defined %}
-BACKUP_SOURCE={{ item.srcs }}
-{% endif %}
-
 
 set -uxo pipefail
 {#
