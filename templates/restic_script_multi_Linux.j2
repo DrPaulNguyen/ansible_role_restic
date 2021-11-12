@@ -118,6 +118,7 @@ fi
 {% if item.stdin is defined and item.stdin == true %}
   {% for stdin_cmd in item.stdin_cmds %}
     {{ stdin_cmd.cmd }} | {{ restic_install_path }}/restic backup \
+      {% if item.backup_no_lock|default(false)|bool %} --no-lock \ {% endif %}
       --stdin $MODE_TAG \
       {{ tags(item.tags) }} \
       {{ stdin_filename(stdin_cmd.stdin_filename) }} \
@@ -134,6 +135,7 @@ fi
 {% else %}
   {% for src in item.srcs %}
     {{ restic_install_path }}/restic backup {{ src }} $MODE_TAG \
+      {% if item.backup_no_lock|default(false)|bool %} --no-lock \ {% endif %}
       {{ tags(item.tags) }} \
       {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
       $@ \
