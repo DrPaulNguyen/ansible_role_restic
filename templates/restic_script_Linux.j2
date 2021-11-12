@@ -142,17 +142,19 @@ fi
 {#
   Define stdin forget commands
 #}
-{{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} {{ forget_output_log }}
-if [[ $? -eq 0 ]]
-then
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" {{ forget_result_log }}
-else
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" {{ forget_result_log }}
-    {% if item.mail_on_error is defined and item.mail_on_error == true %}
-    mail -s "restic backup failed on {{ ansible_hostname }}" {{ item.mail_address }}  <<< "Something went wrong while running restic backup script running at {{ ansible_hostname }} at $(date -u '+%Y-%m-%d %H:%M:%S').
-      {%- if item.src is defined -%}
-        {{ ' ' }}We tried to backup '{{ item.src }}'.
-      {%- endif -%}
-      {{ ' ' }}Please repair the restic-{{ item.name | replace(' ', '') }} job."
-    {% endif %}
-fi
+{% if item.forget_on_host is not defined or item.forget_on_host == ansible_hostname %}
+  {{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} {{ forget_output_log }}
+  if [[ $? -eq 0 ]]
+  then
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" {{ forget_result_log }}
+  else
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" {{ forget_result_log }}
+      {% if item.mail_on_error is defined and item.mail_on_error == true %}
+      mail -s "restic backup failed on {{ ansible_hostname }}" {{ item.mail_address }}  <<< "Something went wrong while running restic backup script running at {{ ansible_hostname }} at $(date -u '+%Y-%m-%d %H:%M:%S').
+        {%- if item.src is defined -%}
+          {{ ' ' }}We tried to backup '{{ item.src }}'.
+        {%- endif -%}
+        {{ ' ' }}Please repair the restic-{{ item.name | replace(' ', '') }} job."
+      {% endif %}
+  fi
+{% endif %}
