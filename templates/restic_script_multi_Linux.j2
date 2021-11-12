@@ -159,9 +159,9 @@ fi
     {{ forget_output_log }}
     if [[ $? -eq 0 ]]
     then
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ stdin_cmd.stdin_filename }} OK" {{ forget_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" {{ forget_result_log }}
     else
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ stdin_cmd.stdin_filename }} ERROR" {{ forget_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" {{ forget_result_log }}
         {% if item.mail_on_error is defined and item.mail_on_error == true %}
         mail -s "restic backup failed on {{ ansible_hostname }}" {{ item.mail_address }}  <<< "Something went wrong while running restic backup script running at {{ ansible_hostname }} at $(date -u '+%Y-%m-%d %H:%M:%S').
           {%- if item.src is defined -%}
