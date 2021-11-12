@@ -154,7 +154,7 @@ fi
 
 {% if item.stdin is defined and item.stdin == true %}
   {% for stdin_cmd in item.stdin_cmds %}
-    {{ restic_install_path }}/restic forget --path {{ stdin_cmd.stdin_filename }} {{ retention_pattern(item) }} \
+    {{ restic_install_path }}/restic forget --no-lock --path {{ stdin_cmd.stdin_filename }} {{ retention_pattern(item) }} \
     {{ forget_output_log }}
     if [[ $? -eq 0 ]]
     then
@@ -172,7 +172,7 @@ fi
   {% endfor %}
 {% else %}
   {% for src in item.srcs %}
-    {{ restic_install_path }}/restic forget --path {{ src }} {{ retention_pattern(item) }}  \
+    {{ restic_install_path }}/restic forget --no-lock --path {{ src }} {{ retention_pattern(item) }}  \
     {{ forget_output_log }}
     if [[ $? -eq 0 ]]
     then
