@@ -124,7 +124,7 @@ fi
       {{ stdin_filename(stdin_cmd.stdin_filename) }} \
       {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
       $@ \
-      {{ backup_output_log }}
+      2>&1 {{ backup_output_log }}
       if [[ $? -eq 0 ]]
       then
           echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ stdin_cmd.cmd }} OK" {{ backup_result_log }}
@@ -139,7 +139,7 @@ fi
       {{ tags(item.tags) }} \
       {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
       $@ \
-      {{ backup_output_log }}
+      2>&1 {{ backup_output_log }}
       if [[ $? -eq 0 ]]
       then
           echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ src }} OK" {{ backup_result_log }}
@@ -158,7 +158,7 @@ fi
     {{ restic_install_path }}/restic forget {{ retention_pattern(item) }} \
     {% if item.forget_group_by is defined %}--group-by {{ item.forget_group_by }}{% endif %} \
     {% if item.prune is defined and item.prune == true %}--prune{% endif %} \
-    {{ forget_output_log }}
+    2>&1 {{ forget_output_log }}
     if [[ $? -eq 0 ]]
     then
         echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" {{ forget_result_log }}
