@@ -189,7 +189,7 @@ fi
     fi
   {% endfor %}
 {% endif %}
-{% if item.prune is defined and item.prune == true %}
+{% if (item.prune is defined and item.prune == true) and (item.forget_prune_on_host is not defined or item.forget_prune_on_host == ansible_hostname) %}
   {{ restic_install_path }}/restic prune
   if [[ $? -eq 0 ]]
   then
