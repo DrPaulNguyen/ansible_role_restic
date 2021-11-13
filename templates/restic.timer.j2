@@ -2,8 +2,8 @@
 Description=Run restic backup {{ item.name }} every night
 
 [Timer]
-OnCalendar={{ restic_systemd_timer_default_OnCalendar }}
-RandomizedDelaySec={{ restic_systemd_timer_randomizeddelaysec }}
+OnCalendar={{ item.schedule_on_calendar|default(restic_systemd_timer_default_OnCalendar) }}
+RandomizedDelaySec={{ item.schedule_randomizeddelaysec|default(restic_systemd_timer_randomizeddelaysec) }}
 Persistent=true
 
 [Install]
