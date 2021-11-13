@@ -16,6 +16,7 @@
 {% endif %}
 {% endif %}
 
+export RESTIC_CACHE_DIR='{{ restic_cache_dir }}'
 export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
 export RESTIC_PASSWORD='{{ restic_repos[item.repo].password | regex_replace('\'', '\'\\\'\'') }}'
 BACKUP_NAME={{ item.name }}

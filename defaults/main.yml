@@ -6,6 +6,7 @@ restic_download_path: '/opt/restic'
 restic_install_path: '/usr/bin'
 restic_script_dir: '/opt/restic'
 restic_log_dir: '{{ restic_script_dir }}/log'
+restic_cache_dir: '{{ lookup("env", "HOME") }}/.cache/restic'
 restic_repos: {}
 restic_backups: []
 restic_create_schedule: "{{ restic_create_cron }}"
