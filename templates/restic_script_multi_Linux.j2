@@ -129,9 +129,9 @@ fi
       2>&1 {{ backup_output_log }}
       if [[ $? -eq 0 ]]
       then
-          echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ stdin_cmd.cmd }} OK" {{ backup_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ stdin_cmd.name|default(stdin_cmd.cmd) }} OK" {{ backup_result_log }}
       else
-          echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ stdin_cmd.cmd }} ERROR" {{ backup_result_log }}
+          echo "$(date -u '+%Y-%m-%d %H:%M:%S') {{ stdin_cmd.name|default(stdin_cmd.cmd) }} ERROR" {{ backup_result_log }}
       fi
   {% endfor %}
 {% else %}
